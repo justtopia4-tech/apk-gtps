@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/growtopia/server_data.php",
+      "destination": "/api/server_data"
+    },
+    {
+      "source": "/server_data.php",
+      "destination": "/api/server_data"
+    },
+    {
+      "source": "/panel",
+      "destination": "/panel/index.html"
+    }
+  ]
+}

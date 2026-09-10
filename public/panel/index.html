@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SuperGT — Server Configuration Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #090a0f;
+      --surface: #10121a;
+      --surface2: #181b26;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.6);
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --primary-dim: rgba(99, 102, 241, 0.12);
+      --green: #10b981;
+      --green-dim: rgba(16, 185, 129, 0.12);
+      --red: #f43f5e;
+      --red-dim: rgba(244, 63, 94, 0.12);
+      --text: #f1f5f9;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Background Glow */
+    body::before {
+      content: '';
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+      top: -150px;
+      right: -150px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+      bottom: -150px;
+      left: -150px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* Header */
+    .header {
+      margin-bottom: 24px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .brand-badge {
+      width: 40px;
+      height: 40px;
+      background: var(--primary-dim);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+    }
+
+    .brand-badge svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--primary-light);
+    }
+
+    .brand-name {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+
+    .brand-name span {
+      background: linear-gradient(135deg, var(--primary-light), #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      padding-left: 52px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+    }
+
+    .card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--green);
+      background: var(--green-dim);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    .section-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 3px;
+      height: 12px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    /* Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field:last-child { margin-bottom: 0; }
+
+    .field label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 7px;
+    }
+
+    .field label .req { color: var(--primary-light); }
+    .field label .opt { color: var(--text-muted); font-size: 0.58rem; }
+
+    input, textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      padding: 12px 14px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--border-focus);
+      background: rgba(99, 102, 241, 0.04);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    }
+
+    textarea {
+      resize: none;
+      height: 75px;
+      color: #fca5a5;
+      line-height: 1.4;
+    }
+
+    .sep {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    .hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .hint b { color: var(--red); }
+
+    .btn-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.45);
+    }
+
+    .btn:active { transform: translateY(0); }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      box-shadow: none;
+      font-size: 0.8rem;
+      padding: 10px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface2);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: var(--text);
+      box-shadow: none;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .alert {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      align-items: center;
+      gap: 8px;
+      animation: slideUp 0.2s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert.show { display: flex; }
+    .alert.success { background: var(--green-dim); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--green); }
+    .alert.error { background: var(--red-dim); border: 1px solid rgba(244, 63, 94, 0.3); color: var(--red); }
+    .alert.loading { background: var(--primary-dim); border: 1px solid rgba(99, 102, 241, 0.3); color: var(--primary-light); }
+
+    .footer {
+      text-align: center;
+      margin-top: 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <div class="brand-row">
+        <div class="brand-badge">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="brand-name">SuperGT <span>Panel</span></div>
+      </div>
+      <div class="brand-sub">apk server configuration controller</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Server Configuration</div>
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          online
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="section-title">Server Connection</div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>IP Address <span class="req">*</span></label>
+            <input type="text" id="server" placeholder="Contoh: 54.90.55.131" autocomplete="off" spellcheck="false"/>
+          </div>
+          <div class="field">
+            <label>Port <span class="req">*</span></label>
+            <input type="text" id="port" placeholder="17091" autocomplete="off" spellcheck="false"/>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Login URL / Subdomain <span class="req">*</span></label>
+          <input type="text" id="loginurl" placeholder="supergt.vercel.app" autocomplete="off" spellcheck="false"/>
+        </div>
+
+        <div class="field">
+          <label>Meta / Server Title <span class="req">*</span></label>
+          <input type="text" id="meta" placeholder="supergt" autocomplete="off" spellcheck="false"/>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="section-title">Maintenance Mode</div>
+
+        <div class="field">
+          <label>Maintenance Message <span class="opt">(Opsional)</span></label>
+          <textarea id="maint" placeholder="Kosongkan jika server aktif normal..."></textarea>
+          <div class="hint">Jika diisi teks, APK akan menampilkan notifikasi <b>Maintenance</b> kepada pemain.</div>
+        </div>
+
+        <div class="btn-wrap">
+          <button class="btn" id="saveBtn" onclick="saveConfig()">
+            <svg id="btnIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+            </svg>
+            <span id="btnText">Simpan Konfigurasi</span>
+          </button>
+
+          <button class="btn btn-secondary" type="button" onclick="testEndpoint()">
+            Cek Respon server_data.php
+          </button>
+        </div>
+
+        <div class="alert" id="alertBox">
+          <div id="alertIcon"></div>
+          <div id="alertMsg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">supergt.vercel.app &nbsp;·&nbsp; GTPS Controller</div>
+  </div>
+
+  <script>
+    // Load config on startup
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/get_config');
+        if (res.ok) {
+          const cfg = await res.json();
+          document.getElementById('server').value   = cfg.server   || '';
+          document.getElementById('port').value     = cfg.port     || '17091';
+          document.getElementById('loginurl').value = cfg.loginurl || 'supergt.vercel.app';
+          document.getElementById('meta').value     = cfg.meta     || 'supergt';
+          document.getElementById('maint').value    = cfg.maint    || '';
+        }
+      } catch (e) {
+        console.warn('Could not auto-load config:', e);
+      }
+    });
+
+    async function saveConfig() {
+      const btn = document.getElementById('saveBtn');
+      const btnTxt = document.getElementById('btnText');
+      const btnIcon = document.getElementById('btnIcon');
+
+      const data = {
+        server:   document.getElementById('server').value.trim(),
+        port:     document.getElementById('port').value.trim(),
+        loginurl: document.getElementById('loginurl').value.trim(),
+        meta:     document.getElementById('meta').value.trim(),
+        maint:    document.getElementById('maint').value.trim(),
+      };
+
+      if (!data.server || !data.port) {
+        showAlert('error', 'IP Server dan Port wajib diisi!');
+        return;
+      }
+
+      btn.disabled = true;
+      btnIcon.outerHTML = '<div class="spinner" id="btnIcon"></div>';
+      btnTxt.textContent = 'Menyimpan...';
+      showAlert('loading', 'Menyimpan konfigurasi...');
+
+      try {
+        const res = await fetch('/api/save_config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          showAlert('success', json.message || 'Konfigurasi berhasil disimpan!');
+        } else {
+          showAlert('error', json.message || 'Gagal menyimpan konfigurasi.');
+        }
+      } catch (e) {
+        showAlert('error', 'Koneksi error: ' + e.message);
+      }
+
+      btn.disabled = false;
+      document.getElementById('btnIcon').outerHTML = `<svg id="btnIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`;
+      btnTxt.textContent = 'Simpan Konfigurasi';
+    }
+
+    async function testEndpoint() {
+      showAlert('loading', 'Menguji endpoint /growtopia/server_data.php...');
+      try {
+        const res = await fetch('/growtopia/server_data.php');
+        const text = await res.text();
+        alert("Respon server_data.php saat ini:\n\n" + text);
+        showAlert('success', 'Endpoint server_data.php aktif & berjalan baik!');
+      } catch (e) {
+        showAlert('error', 'Gagal memanggil server_data.php: ' + e.message);
+      }
+    }
+
+    function showAlert(type, message) {
+      const box = document.getElementById('alertBox');
+      const msg = document.getElementById('alertMsg');
+      box.className = `alert ${type} show`;
+      msg.textContent = message;
+    }
+  </script>
+</body>
+</html>

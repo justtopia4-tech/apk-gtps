@@ -1,0 +1,9 @@
+{
+  "name": "supergt-panel",
+  "version": "1.0.0",
+  "description": "GTPS Web Panel & server_data.php for supergt.vercel.app",
+  "main": "api/server_data.js",
+  "scripts": {
+    "start": "node local-server.js"
+  }
+}
