@@ -18,19 +18,23 @@ module.exports = async function handler(req, res) {
       `maint|${cfg.maint.trim()}`,
       `server|127.0.0.1`,
       `port|17091`,
-      `type2|1`
+      `type|1`,
+      `type2|1`,
+      `RTENDMARKERBS1001`
     ].join("\n") + "\n";
 
     return res.status(200).send(maintBody);
   }
 
-  // Normal server response for Growtopia client
+  // Normal server response matching official/VPS format
   const lines = [
     `server|${cfg.server || "127.0.0.1"}`,
     `port|${cfg.port || "17091"}`,
+    `type|1`,
+    `loginurl|${cfg.loginurl || "supergt.vercel.app"}`,
     `type2|${cfg.type2 || "1"}`,
     `meta|${cfg.meta || "supergt"}`,
-    `loginurl|${cfg.loginurl || "supergt.vercel.app"}`
+    `RTENDMARKERBS1001`
   ];
 
   const body = lines.join("\n") + "\n";
