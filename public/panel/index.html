@@ -435,6 +435,16 @@
           <div class="hint">Jika diisi teks, APK akan menampilkan notifikasi <b>Maintenance</b> kepada pemain.</div>
         </div>
 
+        <div class="field" style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--border);">
+          <label>GitHub Personal Token <span class="opt">(Khusus tombol Simpan di Web)</span></label>
+          <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false"/>
+          <div class="hint" style="margin-top: 6px; font-size: 0.68rem; line-height: 1.4; color: var(--text-muted);">
+            Disimpan aman di browser kamu. <a href="https://github.com/settings/tokens/new?scopes=repo&description=SuperGT+Panel" target="_blank" style="color:var(--primary-light); text-decoration:underline;">Buat token GitHub di sini</a> (centang izin <code>repo</code>).
+            <br>
+            <b>Alternatif tanpa token:</b> Buka dan ubah langsung <a href="https://github.com/justtopia4-tech/apk-gtps/blob/main/config.json" target="_blank" style="color:var(--primary-light); text-decoration:underline;"><b>config.json di repo GitHub</b></a>.
+          </div>
+        </div>
+
         <div class="btn-wrap">
           <button class="btn" id="saveBtn" onclick="saveConfig()">
             <svg id="btnIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -461,8 +471,18 @@
   <script>
     // Load config on startup
     window.addEventListener('DOMContentLoaded', async () => {
+      // Load stored token
+      const savedToken = localStorage.getItem('gtps_github_token');
+      if (savedToken) {
+        document.getElementById('githubToken').value = savedToken;
+      }
+
+      document.getElementById('githubToken').addEventListener('input', (e) => {
+        localStorage.setItem('gtps_github_token', e.target.value.trim());
+      });
+
       try {
-        const res = await fetch('/api/get_config');
+        const res = await fetch('/api/get_config?t=' + Date.now());
         if (res.ok) {
           const cfg = await res.json();
           document.getElementById('server').value   = cfg.server   || '';
@@ -480,6 +500,7 @@
       const btn = document.getElementById('saveBtn');
       const btnTxt = document.getElementById('btnText');
       const btnIcon = document.getElementById('btnIcon');
+      const token = (document.getElementById('githubToken').value || '').trim();
 
       const data = {
         server:   document.getElementById('server').value.trim(),
@@ -487,6 +508,7 @@
         loginurl: document.getElementById('loginurl').value.trim(),
         meta:     document.getElementById('meta').value.trim(),
         maint:    document.getElementById('maint').value.trim(),
+        token:    token
       };
 
       if (!data.server || !data.port) {
@@ -497,18 +519,21 @@
       btn.disabled = true;
       btnIcon.outerHTML = '<div class="spinner" id="btnIcon"></div>';
       btnTxt.textContent = 'Menyimpan...';
-      showAlert('loading', 'Menyimpan konfigurasi...');
+      showAlert('loading', 'Menyimpan konfigurasi ke GitHub...');
 
       try {
         const res = await fetch('/api/save_config', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-github-token': token
+          },
           body: JSON.stringify(data)
         });
         const json = await res.json();
 
         if (json.success) {
-          showAlert('success', json.message || 'Konfigurasi berhasil disimpan!');
+          showAlert('success', json.message || 'Konfigurasi berhasil disimpan permanen ke GitHub!');
         } else {
           showAlert('error', json.message || 'Gagal menyimpan konfigurasi.');
         }
@@ -524,7 +549,7 @@
     async function testEndpoint() {
       showAlert('loading', 'Menguji endpoint /growtopia/server_data.php...');
       try {
-        const res = await fetch('/growtopia/server_data.php');
+        const res = await fetch('/growtopia/server_data.php?t=' + Date.now());
         const text = await res.text();
         alert("Respon server_data.php saat ini:\n\n" + text);
         showAlert('success', 'Endpoint server_data.php aktif & berjalan baik!');
