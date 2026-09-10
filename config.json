@@ -1,8 +1,8 @@
 {
-  "server": "127.0.0.1",
-  "port": "17091",
-  "loginurl": "supergt.vercel.app",
-  "meta": "supergt",
+  "server": "54.211.121.48",
+  "port": "55000",
+  "loginurl": "nopy-gtps.vercel.app",
+  "meta": "supergt1",
   "type2": "1",
   "maint": ""
 }
