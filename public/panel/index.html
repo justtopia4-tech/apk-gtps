@@ -435,14 +435,12 @@
           <div class="hint">Jika diisi teks, APK akan menampilkan notifikasi <b>Maintenance</b> kepada pemain.</div>
         </div>
 
-        <div class="field" style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--border);">
-          <label>GitHub Personal Token <span class="opt">(Khusus tombol Simpan di Web)</span></label>
-          <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false"/>
-          <div class="hint" style="margin-top: 6px; font-size: 0.68rem; line-height: 1.4; color: var(--text-muted);">
-            Disimpan aman di browser kamu. <a href="https://github.com/settings/tokens/new?scopes=repo&description=SuperGT+Panel" target="_blank" style="color:var(--primary-light); text-decoration:underline;">Buat token GitHub di sini</a> (centang izin <code>repo</code>).
-            <br>
-            <b>Alternatif tanpa token:</b> Buka dan ubah langsung <a href="https://github.com/justtopia4-tech/apk-gtps/blob/main/config.json" target="_blank" style="color:var(--primary-light); text-decoration:underline;"><b>config.json di repo GitHub</b></a>.
+        <div id="tokenStatusBox" style="margin-top: 16px; padding: 12px 14px; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 0.72rem; color: #10b981; font-family: 'JetBrains Mono', monospace;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div id="tokenDot" style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; flex-shrink: 0;"></div>
+            <span id="tokenStatusText">Cloud Sync: <b>Aktif & Siap Simpan</b></span>
           </div>
+          <button type="button" onclick="editTokenPrompt()" style="background:none; border:none; color:var(--text-muted); font-size:0.65rem; cursor:pointer; text-decoration:underline;">Ubah Token</button>
         </div>
 
         <div class="btn-wrap">
@@ -469,17 +467,52 @@
   </div>
 
   <script>
+    // URL magic link token detection
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryToken = urlParams.get('token');
+    if (queryToken && queryToken.trim().length > 0) {
+      localStorage.setItem('gtps_github_token', queryToken.trim());
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    function updateTokenUI() {
+      const token = localStorage.getItem('gtps_github_token');
+      const box = document.getElementById('tokenStatusBox');
+      const dot = document.getElementById('tokenDot');
+      const txt = document.getElementById('tokenStatusText');
+
+      if (token && token.trim().length > 5) {
+        box.style.background = 'rgba(16, 185, 129, 0.08)';
+        box.style.borderColor = 'rgba(16, 185, 129, 0.25)';
+        box.style.color = '#10b981';
+        dot.style.background = '#10b981';
+        dot.style.boxShadow = '0 0 8px #10b981';
+        txt.innerHTML = 'Cloud Sync: <b>Aktif & Terdaftar</b>';
+      } else {
+        box.style.background = 'rgba(244, 63, 94, 0.08)';
+        box.style.borderColor = 'rgba(244, 63, 94, 0.25)';
+        box.style.color = '#f43f5e';
+        dot.style.background = '#f43f5e';
+        dot.style.boxShadow = '0 0 8px #f43f5e';
+        txt.innerHTML = 'Cloud Sync: <b>Token Belum Diisi</b>';
+      }
+    }
+
+    function editTokenPrompt() {
+      const cur = localStorage.getItem('gtps_github_token') || '';
+      const input = prompt('Masukkan GitHub Personal Access Token (ghp_...):', cur);
+      if (input !== null) {
+        localStorage.setItem('gtps_github_token', input.trim());
+        updateTokenUI();
+        if (input.trim().length > 5) {
+          showAlert('success', 'Token GitHub berhasil diperbarui di browser kamu!');
+        }
+      }
+    }
+
     // Load config on startup
     window.addEventListener('DOMContentLoaded', async () => {
-      // Load stored token
-      const savedToken = localStorage.getItem('gtps_github_token');
-      if (savedToken) {
-        document.getElementById('githubToken').value = savedToken;
-      }
-
-      document.getElementById('githubToken').addEventListener('input', (e) => {
-        localStorage.setItem('gtps_github_token', e.target.value.trim());
-      });
+      updateTokenUI();
 
       try {
         const res = await fetch('/api/get_config?t=' + Date.now());
@@ -500,7 +533,7 @@
       const btn = document.getElementById('saveBtn');
       const btnTxt = document.getElementById('btnText');
       const btnIcon = document.getElementById('btnIcon');
-      const token = (document.getElementById('githubToken').value || '').trim();
+      const token = (localStorage.getItem('gtps_github_token') || '').trim();
 
       const data = {
         server:   document.getElementById('server').value.trim(),
@@ -535,6 +568,9 @@
         if (json.success) {
           showAlert('success', json.message || 'Konfigurasi berhasil disimpan permanen ke GitHub!');
         } else {
+          if (json.needsToken) {
+            editTokenPrompt();
+          }
           showAlert('error', json.message || 'Gagal menyimpan konfigurasi.');
         }
       } catch (e) {

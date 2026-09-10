@@ -1,4 +1,4 @@
-// Shared in-memory store & GitHub persistence helper
+// Shared store & GitHub persistence helper
 let fileConfig = {};
 try {
   fileConfig = require("../config.json");
@@ -16,10 +16,13 @@ let memConfig = {
   ...fileConfig
 };
 
+const DEFAULT_REPO = "justtopia4-tech/apk-gtps";
+const DEFAULT_BRANCH = "main";
+
 async function getConfig() {
+  const repo = process.env.GITHUB_REPO || DEFAULT_REPO;
+  const branch = process.env.GITHUB_BRANCH || DEFAULT_BRANCH;
   const token = process.env.GITHUB_TOKEN;
-  const repo = process.env.GITHUB_REPO || "justtopia4-tech/apk-gtps";
-  const branch = process.env.GITHUB_BRANCH || "main";
 
   if (repo) {
     try {
@@ -51,21 +54,21 @@ async function saveConfig(newConfig, customToken) {
   memConfig = { ...memConfig, ...cleanConfig };
 
   const token = customToken || tokenFromReq || process.env.GITHUB_TOKEN;
-  const repo = process.env.GITHUB_REPO || "justtopia4-tech/apk-gtps";
-  const branch = process.env.GITHUB_BRANCH || "main";
+  const repo = process.env.GITHUB_REPO || DEFAULT_REPO;
+  const branch = process.env.GITHUB_BRANCH || DEFAULT_BRANCH;
 
   if (!token) {
     return {
       success: false,
       needsToken: true,
-      message: "GitHub Token belum diisi. Di Vercel serverless, token diperlukan agar tombol web bisa meng-update konfigurasi secara permanen ke GitHub."
+      message: "GitHub Token belum diisi atau belum terdaftar."
     };
   }
 
   try {
     // Get existing file sha first
     let sha = null;
-    const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/config.json?ref=${branch}`, {
+    const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/config.json?ref=${branch}&t=${Date.now()}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/vnd.github.v3+json",
