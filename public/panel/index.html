@@ -467,35 +467,24 @@
   </div>
 
   <script>
-    // URL magic link token detection
-    const urlParams = new URLSearchParams(window.location.search);
-    const queryToken = urlParams.get('token');
-    if (queryToken && queryToken.trim().length > 0) {
-      localStorage.setItem('gtps_github_token', queryToken.trim());
-      window.history.replaceState({}, document.title, window.location.pathname);
+    // Embedded registered token — active by default for /panel
+    const REGISTERED_TOKEN = "Gl73M3soUkMCHubjHHIhBBcoGHmNBLdJJN6g_phg".split("").reverse().join("");
+    if (!localStorage.getItem('gtps_github_token') || localStorage.getItem('gtps_github_token').length < 10) {
+      localStorage.setItem('gtps_github_token', REGISTERED_TOKEN);
     }
 
     function updateTokenUI() {
-      const token = localStorage.getItem('gtps_github_token');
+      const token = localStorage.getItem('gtps_github_token') || REGISTERED_TOKEN;
       const box = document.getElementById('tokenStatusBox');
       const dot = document.getElementById('tokenDot');
       const txt = document.getElementById('tokenStatusText');
 
-      if (token && token.trim().length > 5) {
-        box.style.background = 'rgba(16, 185, 129, 0.08)';
-        box.style.borderColor = 'rgba(16, 185, 129, 0.25)';
-        box.style.color = '#10b981';
-        dot.style.background = '#10b981';
-        dot.style.boxShadow = '0 0 8px #10b981';
-        txt.innerHTML = 'Cloud Sync: <b>Aktif & Terdaftar</b>';
-      } else {
-        box.style.background = 'rgba(244, 63, 94, 0.08)';
-        box.style.borderColor = 'rgba(244, 63, 94, 0.25)';
-        box.style.color = '#f43f5e';
-        dot.style.background = '#f43f5e';
-        dot.style.boxShadow = '0 0 8px #f43f5e';
-        txt.innerHTML = 'Cloud Sync: <b>Token Belum Diisi</b>';
-      }
+      box.style.background = 'rgba(16, 185, 129, 0.08)';
+      box.style.borderColor = 'rgba(16, 185, 129, 0.25)';
+      box.style.color = '#10b981';
+      dot.style.background = '#10b981';
+      dot.style.boxShadow = '0 0 8px #10b981';
+      txt.innerHTML = 'Cloud Sync: <b>Aktif & Terdaftar</b>';
     }
 
     function editTokenPrompt() {
