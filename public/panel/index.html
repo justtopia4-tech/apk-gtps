@@ -642,18 +642,18 @@
         <div class="field-row">
           <div class="field-group">
             <label>Server IP</label>
-            <input type="text" id="serverIp" placeholder="34.232.222.5"/>
+            <input type="text" id="serverIp" placeholder="34.232.222.5" value="34.232.222.5"/>
           </div>
           <div class="field-group">
             <label>Server Port</label>
-            <input type="number" id="serverPort" placeholder="55000"/>
+            <input type="number" id="serverPort" placeholder="55000" value="55000"/>
           </div>
         </div>
 
         <div class="field-row">
           <div class="field-group">
             <label>Login URL</label>
-            <input type="text" id="loginUrl" placeholder="nopy-gtps.vercel.app"/>
+            <input type="text" id="loginUrl" placeholder="nopy-gtps.vercel.app" value="nopy-gtps.vercel.app"/>
           </div>
           <div class="field-group">
             <label>Meta Token</label>
@@ -743,7 +743,7 @@
               </div>
             </td>
             <td>
-              <div class="vps-info">${escapeHtml(s.server || '127.0.0.1')}:${escapeHtml(s.port || '17091')}</div>
+              <div class="vps-info">${escapeHtml(s.server || '34.232.222.5')}:${escapeHtml(s.port || '55000')}</div>
             </td>
             <td>
               <span style="font-family: monospace; color: var(--text-dim);">${escapeHtml(s.meta || '-')}</span>
@@ -775,8 +775,8 @@
       document.getElementById('modalTitle').textContent = 'Edit Server: ' + (s.name || key);
       document.getElementById('serverName').value = s.name || '';
       document.getElementById('serverEndpoint').value = s.endpoint || '';
-      document.getElementById('serverIp').value = s.server || '';
-      document.getElementById('serverPort').value = s.port || '';
+      document.getElementById('serverIp').value = s.server || '34.232.222.5';
+      document.getElementById('serverPort').value = (s.port !== undefined && s.port !== null && String(s.port).trim() !== '') ? s.port : '55000';
       document.getElementById('loginUrl').value = s.loginurl || 'nopy-gtps.vercel.app';
       document.getElementById('metaToken').value = s.meta || '';
       document.getElementById('maintMsg').value = s.maint || '';
@@ -821,16 +821,11 @@
       const editKey = document.getElementById('editKey').value;
       const name = document.getElementById('serverName').value.trim();
       let endpoint = document.getElementById('serverEndpoint').value.trim().toLowerCase().replace(/^\/+/, '');
-      const server = document.getElementById('serverIp').value.trim();
-      const port = document.getElementById('serverPort').value.trim();
-      const loginurl = document.getElementById('loginUrl').value.trim();
+      const server = (document.getElementById('serverIp').value || '').trim() || '34.232.222.5';
+      const port = (document.getElementById('serverPort').value || '').trim() || '55000';
+      const loginurl = (document.getElementById('loginUrl').value || '').trim() || 'nopy-gtps.vercel.app';
       const meta = document.getElementById('metaToken').value.trim();
       const maint = document.getElementById('maintMsg').value.trim();
-
-      if (!server || !port) {
-        showToast('Server IP dan Port tidak boleh kosong!', 'error');
-        return;
-      }
 
       const key = (editKey === '__new__') ? (endpoint || 'server_' + Date.now()) : editKey;
 
@@ -854,6 +849,10 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            server: server,
+            port: port,
+            loginurl: loginurl || 'nopy-gtps.vercel.app',
+            meta: meta || endpoint || 'supergt2',
             servers: currentConfig.servers
           })
         });
@@ -882,11 +881,17 @@
 
       delete currentConfig.servers[key];
 
+      const primary = currentConfig.servers['default'] || Object.values(currentConfig.servers)[0] || { server: '34.232.222.5', port: '55000' };
+
       try {
         const res = await fetch('/api/save_config', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            server: primary.server || '34.232.222.5',
+            port: primary.port || '55000',
+            loginurl: primary.loginurl || 'nopy-gtps.vercel.app',
+            meta: primary.meta || 'supergt2',
             servers: currentConfig.servers
           })
         });
