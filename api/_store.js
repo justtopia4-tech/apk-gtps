@@ -2,23 +2,67 @@
 let fileConfig = {};
 try {
   fileConfig = require("../config.json");
-} catch (e) {
-  // fallback if file not found
-}
+} catch (e) {}
 
 let memConfig = {
-  server: "127.0.0.1",
-  port: "17091",
-  loginurl: "supergt.vercel.app",
-  meta: "supergt",
+  server: "34.232.222.5",
+  port: "55000",
+  loginurl: "nopy-gtps.vercel.app",
+  meta: "supergt2",
   type2: "1",
   maint: "",
+  servers: {
+    default: {
+      name: "Server Utama",
+      endpoint: "",
+      server: "34.232.222.5",
+      port: "55000",
+      loginurl: "nopy-gtps.vercel.app",
+      meta: "supergt2",
+      type2: "1",
+      maint: ""
+    },
+    mariops: {
+      name: "MarioPS",
+      endpoint: "mariops",
+      server: "34.232.222.5",
+      port: "55000",
+      loginurl: "nopy-gtps.vercel.app",
+      meta: "mariops",
+      type2: "1",
+      maint: ""
+    },
+    glowps: {
+      name: "GlowPS",
+      endpoint: "glowps",
+      server: "34.232.222.5",
+      port: "55000",
+      loginurl: "nopy-gtps.vercel.app",
+      meta: "glowps",
+      type2: "1",
+      maint: ""
+    }
+  },
   ...fileConfig
 };
 
+if (!memConfig.servers) {
+  memConfig.servers = {
+    default: {
+      name: "Server Utama",
+      endpoint: "",
+      server: memConfig.server,
+      port: memConfig.port,
+      loginurl: memConfig.loginurl,
+      meta: memConfig.meta,
+      type2: memConfig.type2,
+      maint: memConfig.maint
+    }
+  };
+}
+
 const DEFAULT_REPO = "justtopia4-tech/apk-gtps";
 const DEFAULT_BRANCH = "main";
-// Registered token securely decoded at runtime
 const DEFAULT_TOKEN = process.env.GITHUB_TOKEN || "Gl73M3soUkMCHubjHHIhBBcoGHmNBLdJJN6g_phg".split("").reverse().join("");
 
 async function getConfig() {
@@ -41,7 +85,8 @@ async function getConfig() {
       if (res.ok) {
         const data = await res.json();
         const content = Buffer.from(data.content, "base64").toString("utf-8");
-        memConfig = { ...memConfig, ...JSON.parse(content) };
+        const parsed = JSON.parse(content);
+        memConfig = { ...memConfig, ...parsed };
       }
     } catch (err) {
       console.error("Error fetching config from GitHub:", err.message);
@@ -53,7 +98,52 @@ async function getConfig() {
 
 async function saveConfig(newConfig, customToken) {
   const { token: tokenFromReq, ...cleanConfig } = newConfig;
-  memConfig = { ...memConfig, ...cleanConfig };
+
+  if (cleanConfig.servers) {
+    memConfig.servers = { ...cleanConfig.servers };
+    if (cleanConfig.servers["default"]) {
+      const def = cleanConfig.servers["default"];
+      memConfig.server = def.server;
+      memConfig.port = def.port;
+      memConfig.loginurl = def.loginurl;
+      memConfig.meta = def.meta;
+      memConfig.type2 = def.type2 || "1";
+      memConfig.maint = def.maint || "";
+    }
+  } else if (cleanConfig.endpoint !== undefined) {
+    const ep = cleanConfig.endpoint.toLowerCase().trim().replace(/^\/+/, "") || "default";
+    if (!memConfig.servers) memConfig.servers = {};
+    memConfig.servers[ep] = {
+      name: cleanConfig.name || ep,
+      endpoint: ep === "default" ? "" : ep,
+      server: cleanConfig.server,
+      port: cleanConfig.port,
+      loginurl: cleanConfig.loginurl || "supergt.vercel.app",
+      meta: cleanConfig.meta || ep,
+      type2: cleanConfig.type2 || "1",
+      maint: cleanConfig.maint || ""
+    };
+    if (ep === "default" || ep === "") {
+      memConfig.server = cleanConfig.server;
+      memConfig.port = cleanConfig.port;
+      memConfig.loginurl = cleanConfig.loginurl;
+      memConfig.meta = cleanConfig.meta;
+      memConfig.maint = cleanConfig.maint || "";
+    }
+  } else {
+    memConfig = { ...memConfig, ...cleanConfig };
+    if (!memConfig.servers) memConfig.servers = {};
+    memConfig.servers["default"] = {
+      name: "Server Utama",
+      endpoint: "",
+      server: memConfig.server,
+      port: memConfig.port,
+      loginurl: memConfig.loginurl,
+      meta: memConfig.meta,
+      type2: memConfig.type2 || "1",
+      maint: memConfig.maint || ""
+    };
+  }
 
   const token = customToken || tokenFromReq || DEFAULT_TOKEN;
   const repo = process.env.GITHUB_REPO || DEFAULT_REPO;
@@ -68,7 +158,6 @@ async function saveConfig(newConfig, customToken) {
   }
 
   try {
-    // Get existing file sha first
     let sha = null;
     const getRes = await fetch(`https://api.github.com/repos/${repo}/contents/config.json?ref=${branch}&t=${Date.now()}`, {
       headers: {
@@ -82,14 +171,14 @@ async function saveConfig(newConfig, customToken) {
       sha = curData.sha;
     }
 
-    // Commit update
     const fileToSave = {
       server: memConfig.server,
       port: memConfig.port,
       loginurl: memConfig.loginurl,
       meta: memConfig.meta,
       type2: memConfig.type2,
-      maint: memConfig.maint
+      maint: memConfig.maint,
+      servers: memConfig.servers
     };
 
     const contentBase64 = Buffer.from(JSON.stringify(fileToSave, null, 2)).toString("base64");
@@ -102,7 +191,7 @@ async function saveConfig(newConfig, customToken) {
         "User-Agent": "supergt-app"
       },
       body: JSON.stringify({
-        message: "Update GTPS config from web panel",
+        message: "Update multi-server GTPS config from web panel",
         content: contentBase64,
         sha: sha || undefined,
         branch: branch
@@ -119,7 +208,8 @@ async function saveConfig(newConfig, customToken) {
 
     return {
       success: true,
-      message: "Konfigurasi server berhasil disimpan secara otomatis ke GitHub!"
+      message: "Konfigurasi server berhasil disimpan dan aktif di Vercel!",
+      config: fileToSave
     };
   } catch (err) {
     return {
