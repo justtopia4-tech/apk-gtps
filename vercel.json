@@ -12,6 +12,18 @@
     {
       "source": "/panel",
       "destination": "/panel/index.html"
+    },
+    {
+      "source": "/panel/(.*)",
+      "destination": "/panel/$1"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/:endpoint",
+      "destination": "/api/server_data?endpoint=:endpoint"
     }
   ]
 }
