@@ -19,7 +19,7 @@
     "mariops": {
       "name": "MarioPS",
       "endpoint": "mariops",
-      "server": "34.232.222.5",
+      "server": "3.219.238.158",
       "port": "55000",
       "loginurl": "nopy-gtps.vercel.app",
       "meta": "mariops",
