@@ -1,7 +1,6 @@
 const { getConfig } = require("./_store");
 
 module.exports = async function handler(req, res) {
-  // Allow cross-origin if needed
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Content-Type", "text/plain; charset=utf-8");
@@ -12,10 +11,31 @@ module.exports = async function handler(req, res) {
 
   const cfg = await getConfig();
 
+  // Determine endpoint from query param or URL path
+  let endpoint = "";
+  if (req.query && req.query.endpoint) {
+    endpoint = req.query.endpoint.toLowerCase().trim().replace(/^\/+/, "");
+  } else if (req.url) {
+    const parsed = new URL(req.url, "http://localhost");
+    const p = parsed.pathname.replace(/^\/+/, "");
+    if (p && p !== "growtopia/server_data.php" && p !== "server_data.php" && !p.startsWith("api/") && !p.startsWith("panel")) {
+      endpoint = p.toLowerCase().trim();
+    }
+  }
+
+  let serverData = null;
+  if (endpoint && cfg.servers && cfg.servers[endpoint]) {
+    serverData = cfg.servers[endpoint];
+  } else if (cfg.servers && cfg.servers["default"]) {
+    serverData = cfg.servers["default"];
+  } else {
+    serverData = cfg;
+  }
+
   // If maintenance message exists, send maintenance response
-  if (cfg.maint && cfg.maint.trim().length > 0) {
+  if (serverData.maint && serverData.maint.trim().length > 0) {
     const maintBody = [
-      `maint|${cfg.maint.trim()}`,
+      `maint|${serverData.maint.trim()}`,
       `server|127.0.0.1`,
       `port|17091`,
       `type|1`,
@@ -28,12 +48,12 @@ module.exports = async function handler(req, res) {
 
   // Normal server response matching official/VPS format
   const lines = [
-    `server|${cfg.server || "127.0.0.1"}`,
-    `port|${cfg.port || "17091"}`,
+    `server|${serverData.server || "127.0.0.1"}`,
+    `port|${serverData.port || "17091"}`,
     `type|1`,
-    `loginurl|${cfg.loginurl || "supergt.vercel.app"}`,
-    `type2|${cfg.type2 || "1"}`,
-    `meta|${cfg.meta || "supergt"}`,
+    `loginurl|${serverData.loginurl || "supergt.vercel.app"}`,
+    `type2|${serverData.type2 || "1"}`,
+    `meta|${serverData.meta || endpoint || "supergt"}`,
     `RTENDMARKERBS1001`
   ];
 
