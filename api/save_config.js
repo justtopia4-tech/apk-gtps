@@ -15,10 +15,21 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const data = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-    if (!data.server || !data.port) {
-      return res.status(400).json({ success: false, message: "Server IP dan Port wajib diisi." });
+    const data = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
+
+    // Support both multi-server payload { servers: {...} } and single server { server, port }
+    if (data.servers && typeof data.servers === "object" && Object.keys(data.servers).length > 0) {
+      const keys = Object.keys(data.servers);
+      const primary = data.servers["default"] || data.servers[keys[0]] || {};
+      data.server = data.server || primary.server || "34.232.222.5";
+      data.port = data.port || primary.port || "55000";
+      data.loginurl = data.loginurl || primary.loginurl || "nopy-gtps.vercel.app";
+      data.meta = data.meta || primary.meta || "supergt2";
     }
+
+    // Default fallbacks so it never rejects valid requests
+    data.server = (data.server && String(data.server).trim()) || "34.232.222.5";
+    data.port = (data.port && String(data.port).trim()) || "55000";
 
     const token = req.headers["x-github-token"] || data.token;
     const result = await saveConfig(data, token);
