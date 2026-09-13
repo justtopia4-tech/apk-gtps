@@ -1,12 +1,40 @@
 {
   "server": "34.232.222.5",
   "port": "55000",
+  "loginurl": "nopy-gtps.vercel.app",
+  "meta": "supergt2",
   "type2": "1",
   "maint": "",
   "servers": {
     "default": {
+      "name": "Server Utama",
+      "endpoint": "",
       "server": "34.232.222.5",
-      "port": "55000"
+      "port": "55000",
+      "loginurl": "nopy-gtps.vercel.app",
+      "meta": "supergt2",
+      "type2": "1",
+      "maint": ""
+    },
+    "mariops": {
+      "name": "MarioPS",
+      "endpoint": "mariops",
+      "server": "34.232.222.5",
+      "port": "55000",
+      "loginurl": "nopy-gtps.vercel.app",
+      "meta": "mariops",
+      "type2": "1",
+      "maint": ""
+    },
+    "glowps": {
+      "name": "GlowPS",
+      "endpoint": "glowps",
+      "server": "34.232.222.5",
+      "port": "55000",
+      "loginurl": "nopy-gtps.vercel.app",
+      "meta": "glowps",
+      "type2": "1",
+      "maint": ""
     }
   }
 }
