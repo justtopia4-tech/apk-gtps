@@ -10,6 +10,14 @@
       "destination": "/api/server_data"
     },
     {
+      "source": "/login",
+      "destination": "/login/index.html"
+    },
+    {
+      "source": "/login/(.*)",
+      "destination": "/login/$1"
+    },
+    {
       "source": "/panel",
       "destination": "/panel/index.html"
     },

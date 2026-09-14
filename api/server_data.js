@@ -18,7 +18,7 @@ module.exports = async function handler(req, res) {
   } else if (req.url) {
     const parsed = new URL(req.url, "http://localhost");
     const p = parsed.pathname.replace(/^\/+/, "");
-    if (p && p !== "growtopia/server_data.php" && p !== "server_data.php" && !p.startsWith("api/") && !p.startsWith("panel")) {
+    if (p && p !== "growtopia/server_data.php" && p !== "server_data.php" && !p.startsWith("api/") && !p.startsWith("panel") && !p.startsWith("login")) {
       endpoint = p.toLowerCase().trim();
     }
   }

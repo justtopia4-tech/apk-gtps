@@ -58,6 +58,13 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Static: /login or /login/
+  if (pathname === "/login" || pathname === "/login/") {
+    const filePath = path.join(__dirname, "public", "login", "index.html");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    return fs.createReadStream(filePath).pipe(res);
+  }
+
   // Static: /panel or /panel/
   if (pathname === "/panel" || pathname === "/panel/") {
     const filePath = path.join(__dirname, "public", "panel", "index.html");
