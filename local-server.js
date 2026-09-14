@@ -5,6 +5,7 @@ const path = require("path");
 const serverDataHandler = require("./api/server_data");
 const getConfigHandler = require("./api/get_config");
 const saveConfigHandler = require("./api/save_config");
+const verifyPinHandler = require("./api/verify_pin");
 
 const PORT = process.env.PORT || 3000;
 
@@ -33,6 +34,17 @@ const server = http.createServer(async (req, res) => {
   // Route: /api/get_config
   if (pathname === "/api/get_config") {
     return getConfigHandler(req, res);
+  }
+
+  // Route: /api/verify_pin
+  if (pathname === "/api/verify_pin") {
+    let body = "";
+    req.on("data", chunk => (body += chunk));
+    req.on("end", () => {
+      req.body = body;
+      return verifyPinHandler(req, res);
+    });
+    return;
   }
 
   // Route: /api/save_config

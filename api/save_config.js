@@ -1,9 +1,11 @@
 const { saveConfig } = require("./_store");
 
+const REQUIRED_PIN = "NOPYSOURCE#1000";
+
 module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-github-token");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-github-token, x-panel-pin");
   res.setHeader("Content-Type", "application/json");
 
   if (req.method === "OPTIONS") {
@@ -16,6 +18,15 @@ module.exports = async function handler(req, res) {
 
   try {
     const data = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
+
+    // Verify PIN authorization
+    const pin = req.headers["x-panel-pin"] || data.pin;
+    if (!pin || String(pin).trim() !== REQUIRED_PIN) {
+      return res.status(401).json({
+        success: false,
+        message: "Akses Ditolak: PIN Keamanan salah atau belum dimasukkan!"
+      });
+    }
 
     // Support both multi-server payload { servers: {...} } and single server { server, port }
     if (data.servers && typeof data.servers === "object" && Object.keys(data.servers).length > 0) {
