@@ -15,6 +15,16 @@
       "meta": "supergt2",
       "type2": "1",
       "maint": ""
+    },
+    "mariops": {
+      "name": "MarioPS",
+      "endpoint": "mariops",
+      "server": "3.219.238.158",
+      "port": "55000",
+      "loginurl": "nopy-gtps.vercel.app",
+      "meta": "mariops",
+      "type2": "1",
+      "maint": ""
     }
   }
 }
