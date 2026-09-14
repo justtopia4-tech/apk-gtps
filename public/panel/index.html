@@ -760,7 +760,7 @@
 </head>
 <body>
 
-  <div class="wrapper">
+  <div class="wrapper" id="mainWrapper" style="display: none;">
     <!-- Header -->
     <div class="header">
       <div class="brand-row">
@@ -942,34 +942,33 @@
     const REQUIRED_PIN = "NOPYSOURCE#1000";
     const PIN_STORAGE_KEY = "supergt_panel_pin";
 
+    let currentPin = "";
     let currentConfig = {};
     const hostOrigin = window.location.origin;
 
     function getStoredPin() {
-      return sessionStorage.getItem(PIN_STORAGE_KEY) || localStorage.getItem(PIN_STORAGE_KEY) || "";
-    }
-
-    function setStoredPin(pin) {
-      sessionStorage.setItem(PIN_STORAGE_KEY, pin);
-      localStorage.setItem(PIN_STORAGE_KEY, pin);
-    }
-
-    function clearStoredPin() {
-      sessionStorage.removeItem(PIN_STORAGE_KEY);
-      localStorage.removeItem(PIN_STORAGE_KEY);
+      return currentPin || sessionStorage.getItem(PIN_STORAGE_KEY) || "";
     }
 
     function checkAuth() {
-      const pin = getStoredPin();
-      if (pin === REQUIRED_PIN) {
-        document.getElementById('lockScreen').classList.add('hidden');
-        loadConfig();
-      } else {
-        document.getElementById('lockScreen').classList.remove('hidden');
-        setTimeout(() => {
-          const input = document.getElementById('pinInput');
-          if (input) input.focus();
-        }, 150);
+      // Selalu munculkan halaman PIN saat awal masuk ke halaman
+      currentPin = "";
+      sessionStorage.removeItem(PIN_STORAGE_KEY);
+      localStorage.removeItem(PIN_STORAGE_KEY);
+
+      const mainWrapper = document.getElementById('mainWrapper');
+      if (mainWrapper) mainWrapper.style.display = 'none';
+
+      const lockScreen = document.getElementById('lockScreen');
+      if (lockScreen) {
+        lockScreen.style.display = 'flex';
+        lockScreen.classList.remove('hidden');
+      }
+
+      const input = document.getElementById('pinInput');
+      if (input) {
+        input.value = '';
+        setTimeout(() => input.focus(), 150);
       }
     }
 
@@ -1005,10 +1004,22 @@
         }
 
         if (verified) {
-          setStoredPin(entered);
-          document.getElementById('lockScreen').classList.add('hidden');
+          currentPin = entered;
+          sessionStorage.setItem(PIN_STORAGE_KEY, entered);
+
+          const lockScreen = document.getElementById('lockScreen');
+          if (lockScreen) {
+            lockScreen.classList.add('hidden');
+            setTimeout(() => { lockScreen.style.display = 'none'; }, 250);
+          }
+
+          const mainWrapper = document.getElementById('mainWrapper');
+          if (mainWrapper) {
+            mainWrapper.style.display = 'block';
+          }
+
           pinInput.value = '';
-          showToast('Akses panel berhasil dibuka!', 'success');
+          showToast('PIN Benar! Membuka panel...', 'success');
           loadConfig();
         } else {
           showPinError('PIN salah! Akses ditolak.');
@@ -1030,8 +1041,19 @@
     }
 
     function lockPanel() {
-      clearStoredPin();
-      document.getElementById('lockScreen').classList.remove('hidden');
+      currentPin = '';
+      sessionStorage.removeItem(PIN_STORAGE_KEY);
+      localStorage.removeItem(PIN_STORAGE_KEY);
+
+      const mainWrapper = document.getElementById('mainWrapper');
+      if (mainWrapper) mainWrapper.style.display = 'none';
+
+      const lockScreen = document.getElementById('lockScreen');
+      if (lockScreen) {
+        lockScreen.style.display = 'flex';
+        lockScreen.classList.remove('hidden');
+      }
+
       const pinInput = document.getElementById('pinInput');
       if (pinInput) {
         pinInput.value = '';
