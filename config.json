@@ -1,5 +1,5 @@
 {
-  "server": "104.64.205.247",
+  "server": "172.236.131.10:7777",
   "port": "55000",
   "loginurl": "nopy-gtps.vercel.app",
   "meta": "supergt2",
@@ -9,7 +9,7 @@
     "default": {
       "name": "Server Utama",
       "endpoint": "",
-      "server": "104.64.205.247",
+      "server": "172.236.131.10:7777",
       "port": "55000",
       "loginurl": "nopy-gtps.vercel.app",
       "meta": "supergt2",
