@@ -20,7 +20,7 @@
       "name": "MarioPS",
       "endpoint": "mariops",
       "server": "172.236.131.10",
-      "port": "55000",
+      "port": "17091",
       "loginurl": "nopy-gtps.vercel.app",
       "meta": "marioza",
       "type2": "1",
