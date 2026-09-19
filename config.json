@@ -31,7 +31,7 @@
       "endpoint": "glowps",
       "server": "172.236.131.10",
       "port": "55000",
-      "loginurl": "nopy-gtps.vercel.app",
+      "loginurl": "nopy-gtps-nine.vercel.app",
       "meta": "glowps",
       "type2": "1",
       "maint": ""
