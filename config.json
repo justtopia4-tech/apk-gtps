@@ -29,10 +29,10 @@
     "glowps": {
       "name": "GlowPS",
       "endpoint": "glowps",
-      "server": "104.64.205.247",
+      "server": "172.236.131.10",
       "port": "55000",
       "loginurl": "nopy-gtps.vercel.app",
-      "meta": "glowps",
+      "meta": "glowq",
       "type2": "1",
       "maint": ""
     },
