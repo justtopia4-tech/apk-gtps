@@ -1,5 +1,5 @@
 {
-  "server": "104.64.205.247",
+  "server": "172.236.131.10",
   "port": "55000",
   "loginurl": "nopy-gtps-nine.vercel.app",
   "meta": "glowps",
@@ -18,7 +18,7 @@
     "mariops": {
       "name": "MarioPS",
       "endpoint": "mariops",
-      "server": "104.64.205.247",
+      "server": "172.236.131.10",
       "port": "17091",
       "loginurl": "nopy-gtps-nine.vercel.app",
       "meta": "mariozx",
@@ -35,7 +35,7 @@
     "nexusps": {
       "name": "NexusPS",
       "endpoint": "nexusps",
-      "server": "104.64.205.247",
+      "server": "172.236.131.10",
       "port": "17092",
       "loginurl": "nopy-gtps-nine.vercel.app",
       "meta": "nexusps",
@@ -52,7 +52,7 @@
     "glowps": {
       "name": "GlowPS",
       "endpoint": "glowps",
-      "server": "104.64.205.247",
+      "server": "172.236.131.10",
       "port": "55000",
       "loginurl": "nopy-gtps-nine.vercel.app",
       "meta": "glowps",
