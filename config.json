@@ -1,50 +1,70 @@
 {
-  "server": "172.236.131.10",
+  "server": "104.64.205.247",
   "port": "55000",
   "loginurl": "nopy-gtps-nine.vercel.app",
-  "meta": "supergt2",
+  "meta": "glowps",
   "type2": "1",
   "maint": "",
+  "apk_builder": {
+    "base_apk": "base/Growtopia.apk",
+    "output_dir": "output",
+    "host": "superps.vercel.app",
+    "panel_url": "https://superps.vercel.app/panel",
+    "patch_mode": "auto",
+    "auto_sign": true,
+    "default_icon": "icons/glowps.png"
+  },
   "servers": {
-    "default": {
-      "name": "Server Utama",
-      "endpoint": "",
-      "server": "172.236.131.10",
-      "port": "55000",
-      "loginurl": "nopy-gtps-nine.vercel.app",
-      "meta": "supergt2",
-      "type2": "1",
-      "maint": ""
-    },
     "mariops": {
       "name": "MarioPS",
       "endpoint": "mariops",
-      "server": "172.236.131.10",
+      "server": "104.64.205.247",
       "port": "17091",
-      "loginurl": "nopy-gtps.vercel-nine.app",
-      "meta": "mariops",
-      "type2": "1",
-      "maint": ""
-    },
-    "glowps": {
-      "name": "GlowPS",
-      "endpoint": "glowps",
-      "server": "172.236.131.10",
-      "port": "55000",
       "loginurl": "nopy-gtps-nine.vercel.app",
-      "meta": "glowps",
+      "meta": "mariozx",
       "type2": "1",
-      "maint": ""
+      "maint": "",
+      "apk": {
+        "enabled": true,
+        "app_name": "Growtopia - MarioPS",
+        "package_name": "com.mariops.growtopia",
+        "icon": "icons/mariops.png",
+        "output_name": "MarioPS.apk"
+      }
     },
     "nexusps": {
       "name": "NexusPS",
       "endpoint": "nexusps",
-      "server": "172.236.131.10",
+      "server": "104.64.205.247",
       "port": "17092",
       "loginurl": "nopy-gtps-nine.vercel.app",
       "meta": "nexusps",
       "type2": "1",
-      "maint": ""
+      "maint": "",
+      "apk": {
+        "enabled": true,
+        "app_name": "Growtopia - NexusPS",
+        "package_name": "com.nexusps.growtopia",
+        "icon": "icons/nexusps.png",
+        "output_name": "NexusPS.apk"
+      }
+    },
+    "glowps": {
+      "name": "GlowPS",
+      "endpoint": "glowps",
+      "server": "104.64.205.247",
+      "port": "55000",
+      "loginurl": "nopy-gtps-nine.vercel.app",
+      "meta": "glowps",
+      "type2": "1",
+      "maint": "",
+      "apk": {
+        "enabled": true,
+        "app_name": "Growtopia - GlowPS",
+        "package_name": "com.glowps.growtopia",
+        "icon": "icons/glowps.png",
+        "output_name": "GlowPS.apk"
+      }
     }
   }
 }
