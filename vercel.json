@@ -10,6 +10,14 @@
       "destination": "/api/server_data"
     },
     {
+      "source": "/:endpoint/server_data.php",
+      "destination": "/api/server_data?endpoint=:endpoint"
+    },
+    {
+      "source": "/:endpoint/growtopia/server_data.php",
+      "destination": "/api/server_data?endpoint=:endpoint"
+    },
+    {
       "source": "/login",
       "destination": "/login/index.html"
     },
