@@ -40,7 +40,7 @@
       "name": "NexusPS",
       "endpoint": "nexusps",
       "server": "172.236.131.10",
-      "port": "55000",
+      "port": "17092",
       "loginurl": "nopy-gtps-nine.vercel.app",
       "meta": "nexusps",
       "type2": "1",
