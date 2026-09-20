@@ -27,7 +27,7 @@
       "apk": {
         "enabled": true,
         "app_name": "Growtopia - MarioPS",
-        "package_name": "com.mariops.growtopia",
+        "package_name": "com.rtsoft.growtopia",
         "icon": "icons/mariops.png",
         "output_name": "MarioPS.apk"
       }
@@ -44,7 +44,7 @@
       "apk": {
         "enabled": true,
         "app_name": "Growtopia - NexusPS",
-        "package_name": "com.nexusps.growtopia",
+        "package_name": "com.rtsoft.growtopia",
         "icon": "icons/nexusps.png",
         "output_name": "NexusPS.apk"
       }
@@ -61,7 +61,7 @@
       "apk": {
         "enabled": true,
         "app_name": "Growtopia - GlowPS",
-        "package_name": "com.glowps.growtopia",
+        "package_name": "com.rtsoft.growtopia",
         "icon": "icons/glowps.png",
         "output_name": "GlowPS.apk"
       }
