@@ -19,14 +19,14 @@
       "name": "MarioPS",
       "endpoint": "mariops",
       "server": "172.236.131.10",
-      "port": "17091",
+      "port": "55000",
       "loginurl": "nopy-gtps-nine.vercel.app",
       "meta": "mariozx",
       "type2": "1",
       "maint": "",
       "apk": {
         "enabled": true,
-        "app_name": "Growtopia - MarioPS",
+        "app_name": "MarioPS",
         "package_name": "com.rtsoft.growtopia",
         "icon": "icons/mariops.png",
         "output_name": "MarioPS.apk"
@@ -36,14 +36,14 @@
       "name": "NexusPS",
       "endpoint": "nexusps",
       "server": "172.236.131.10",
-      "port": "17092",
+      "port": "55000",
       "loginurl": "nopy-gtps-nine.vercel.app",
       "meta": "nexusps",
       "type2": "1",
       "maint": "",
       "apk": {
         "enabled": true,
-        "app_name": "Growtopia - NexusPS",
+        "app_name": "NexusPS",
         "package_name": "com.rtsoft.growtopia",
         "icon": "icons/nexusps.png",
         "output_name": "NexusPS.apk"
@@ -60,7 +60,7 @@
       "maint": "",
       "apk": {
         "enabled": true,
-        "app_name": "Growtopia - GlowPS",
+        "app_name": "GlowPS",
         "package_name": "com.rtsoft.growtopia",
         "icon": "icons/glowps.png",
         "output_name": "GlowPS.apk"
