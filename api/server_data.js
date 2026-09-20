@@ -23,11 +23,20 @@ module.exports = async function handler(req, res) {
     }
   }
 
+  // Strip trailing subpaths (e.g. "mariops/server_data.php" -> "mariops")
+  if (endpoint.includes("/")) {
+    endpoint = endpoint.split("/")[0].trim();
+  }
+
   let serverData = null;
   if (endpoint && cfg.servers && cfg.servers[endpoint]) {
     serverData = cfg.servers[endpoint];
   } else if (cfg.servers && cfg.servers["default"]) {
     serverData = cfg.servers["default"];
+  } else if (cfg.servers && cfg.servers["glowps"]) {
+    serverData = cfg.servers["glowps"];
+  } else if (cfg.servers && Object.values(cfg.servers).length > 0) {
+    serverData = Object.values(cfg.servers)[0];
   } else {
     serverData = cfg;
   }
@@ -47,13 +56,15 @@ module.exports = async function handler(req, res) {
   }
 
   // Normal server response matching official/VPS format
+  // Note: meta is set to "-" (standard for NopySource / private servers to avoid crash/redirection)
   const lines = [
-    `server|${serverData.server || "127.0.0.1"}`,
-    `port|${serverData.port || "17091"}`,
+    `server|${serverData.server || "172.236.131.10"}`,
+    `port|${serverData.port || "55000"}`,
     `type|1`,
-    `loginurl|${serverData.loginurl || "supergt.vercel.app"}`,
-    `type2|${serverData.type2 || "1"}`,
-    `meta|${serverData.meta || endpoint || "supergt"}`,
+    `#maint|Server active`,
+    `loginurl|${serverData.loginurl || "nopy-gtps-nine.vercel.app"}`,
+    `type2|1`,
+    `meta|-`,
     `RTENDMARKERBS1001`
   ];
 
