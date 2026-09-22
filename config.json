@@ -29,19 +29,12 @@
     "glowps": {
       "name": "GlowPS",
       "endpoint": "glowps",
-      "server": "172.236.131.10",
+      "server": "172.236.135.23",
       "port": "55000",
       "loginurl": "nopy-gtps-nine.vercel.app",
       "meta": "glowps",
       "type2": "1",
-      "maint": "",
-      "apk": {
-        "enabled": true,
-        "app_name": "GlowPS",
-        "package_name": "com.rtsoft.growtopia",
-        "icon": "icons/glowps.png",
-        "output_name": "GlowPS.apk"
-      }
+      "maint": ""
     }
   }
 }
