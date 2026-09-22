@@ -1,36 +1,20 @@
 {
-  "server": "172.236.131.10",
+  "server": "104.64.205.247",
   "port": "55000",
   "loginurl": "nopy-gtps-nine.vercel.app",
-  "meta": "glowps",
+  "meta": "supergt2",
   "type2": "1",
   "maint": "",
-  "apk_builder": {
-    "base_apk": "base/Growtopia.apk",
-    "output_dir": "output",
-    "host": "superps.vercel.app",
-    "panel_url": "https://superps.vercel.app/panel",
-    "patch_mode": "auto",
-    "auto_sign": true,
-    "default_icon": "icons/glowps.png"
-  },
   "servers": {
     "mariops": {
       "name": "MarioPS",
       "endpoint": "mariops",
-      "server": "172.236.131.10",
+      "server": "172.236.135.23",
       "port": "55000",
       "loginurl": "nopy-gtps-nine.vercel.app",
-      "meta": "mariozx",
+      "meta": "mariops",
       "type2": "1",
-      "maint": "",
-      "apk": {
-        "enabled": true,
-        "app_name": "MarioPS",
-        "package_name": "com.rtsoft.growtopia",
-        "icon": "icons/mariops.png",
-        "output_name": "MarioPS.apk"
-      }
+      "maint": ""
     },
     "nexusps": {
       "name": "NexusPS",
