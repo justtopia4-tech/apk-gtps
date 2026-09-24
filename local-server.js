@@ -6,6 +6,7 @@ const serverDataHandler = require("./api/server_data");
 const getConfigHandler = require("./api/get_config");
 const saveConfigHandler = require("./api/save_config");
 const verifyPinHandler = require("./api/verify_pin");
+const hostsHandler = require("./api/hosts");
 
 const PORT = process.env.PORT || 3000;
 
@@ -29,6 +30,11 @@ const server = http.createServer(async (req, res) => {
   // Route: /growtopia/server_data.php and /server_data.php
   if (pathname === "/growtopia/server_data.php" || pathname === "/server_data.php") {
     return serverDataHandler(req, res);
+  }
+
+  // Route: /raw or /hosts.txt
+  if (pathname === "/raw" || pathname.startsWith("/raw/") || pathname === "/hosts.txt") {
+    return hostsHandler(req, res);
   }
 
   // Route: /api/get_config
@@ -72,8 +78,8 @@ const server = http.createServer(async (req, res) => {
     return fs.createReadStream(filePath).pipe(res);
   }
 
-  // Static: Root
-  if (pathname === "/") {
+  // Static: Root (/) or /how-to-play
+  if (pathname === "/" || pathname === "/how-to-play" || pathname.startsWith("/how-to-play/")) {
     const filePath = path.join(__dirname, "public", "index.html");
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     return fs.createReadStream(filePath).pipe(res);
@@ -85,6 +91,8 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
   console.log(`[SuperGT] Local development server running at http://localhost:${PORT}`);
+  console.log(`[SuperGT] How To Play: http://localhost:${PORT}/how-to-play`);
   console.log(`[SuperGT] Panel URL: http://localhost:${PORT}/panel`);
   console.log(`[SuperGT] GTPS Endpoint: http://localhost:${PORT}/growtopia/server_data.php`);
+  console.log(`[SuperGT] Raw Hosts: http://localhost:${PORT}/raw`);
 });

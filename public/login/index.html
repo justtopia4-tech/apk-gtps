@@ -307,12 +307,16 @@
   </div>
 
   <script>
-    const REQUIRED_PIN = "NOPYSOURCE#1000";
+    const REQUIRED_PIN = "yamaha1_2";
     const AUTH_KEY = "supergt_auth_pin";
 
-    // Pastikan session lama bersih saat mendarat di halaman login
-    sessionStorage.removeItem(AUTH_KEY);
-    localStorage.removeItem(AUTH_KEY);
+    // Auto-login: jika sudah pernah login di device ini, langsung alihkan ke panel
+    const existingPin = localStorage.getItem(AUTH_KEY) || sessionStorage.getItem(AUTH_KEY);
+    if (existingPin === REQUIRED_PIN) {
+      sessionStorage.setItem(AUTH_KEY, existingPin);
+      localStorage.setItem(AUTH_KEY, existingPin);
+      window.location.replace("/panel");
+    }
 
     const pinInput = document.getElementById('pinInput');
     const errorBox = document.getElementById('errorBox');
@@ -365,6 +369,7 @@
         }
 
         if (verified) {
+          localStorage.setItem(AUTH_KEY, entered);
           sessionStorage.setItem(AUTH_KEY, entered);
           btnSubmit.innerHTML = '<span>Berhasil! Mengalihkan...</span>';
           window.location.replace('/panel');

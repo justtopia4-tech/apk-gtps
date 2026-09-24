@@ -10,12 +10,24 @@
       "destination": "/api/server_data"
     },
     {
-      "source": "/:endpoint/server_data.php",
-      "destination": "/api/server_data?endpoint=:endpoint"
+      "source": "/raw",
+      "destination": "/api/hosts"
     },
     {
-      "source": "/:endpoint/growtopia/server_data.php",
-      "destination": "/api/server_data?endpoint=:endpoint"
+      "source": "/raw/(.*)",
+      "destination": "/api/hosts"
+    },
+    {
+      "source": "/hosts.txt",
+      "destination": "/api/hosts"
+    },
+    {
+      "source": "/how-to-play",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/how-to-play/(.*)",
+      "destination": "/index.html"
     },
     {
       "source": "/login",
@@ -36,10 +48,6 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
-    },
-    {
-      "source": "/:endpoint",
-      "destination": "/api/server_data?endpoint=:endpoint"
     }
   ]
 }

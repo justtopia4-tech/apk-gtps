@@ -1,4 +1,4 @@
-const REQUIRED_PIN = "NOPYSOURCE#1000";
+const REQUIRED_PIN = "yamaha1_2";
 
 module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -11,7 +11,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    let pin = req.headers["x-panel-pin"];
+    let pin = req.headers ? req.headers["x-panel-pin"] : undefined;
     if (!pin && req.method === "POST") {
       const data = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
       pin = data.pin;
